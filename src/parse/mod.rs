@@ -21,3 +21,41 @@ impl Config {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn config_build_positive() {
+        let input: Vec<String> = vec![
+            String::from("minigrep"),
+            String::from("hello"),
+            String::from("poem.txt"),
+        ];
+        let config: Result<Config, &'static str> = Config::build(&input);
+        match config {
+            Ok(val) => {
+                assert_eq!(val.query, "hello");
+                assert_eq!(val.file_name, "poem.txt");
+            }
+            Err(e) => {
+                panic!("Reason for failure {e}");
+            }
+        }
+    }
+
+    #[test]
+    fn config_build_negative() {
+        let input: Vec<String> = vec![String::from("minigrep"), String::from("hello")];
+        let config: Result<Config, &'static str> = Config::build(&input);
+        match config {
+            Ok(val) => {
+                panic!("The config value is {val:?}");
+            }
+            Err(e) => {
+                assert_eq!(e.to_string(), "Not Enough Arguments.");
+            }
+        }
+    }
+}
