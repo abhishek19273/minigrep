@@ -1,4 +1,4 @@
-use minigrep::search;
+use minigrep::{search, search_case_insensitive};
 use std::{env, error::Error, fs, process};
 mod parse;
 use parse::Config;
@@ -22,8 +22,14 @@ fn run(config: Config) -> Result<(), Box<dyn Error>> {
     println!("The file to search this pattern is {}", config.file_name);
     let file_content = fs::read_to_string(&config.file_name)?;
     println!("The file content is {file_content}");
-    for line in search(&config.query, &file_content) {
-        println!("{line}");
+    if config.ignore_case {
+        for line in search_case_insensitive(&config.query, &config.file_name) {
+            println!("{line}")
+        }
+    } else {
+        for line in search(&config.query, &file_content) {
+            println!("{line}");
+        }
     }
     Ok(())
 }

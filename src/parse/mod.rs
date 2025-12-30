@@ -1,7 +1,10 @@
+use std::env;
+
 #[derive(Debug)]
 pub struct Config {
     pub query: String,
     pub file_name: String,
+    pub ignore_case: bool,
 }
 
 impl Config {
@@ -15,9 +18,11 @@ impl Config {
         let file_name = args
             .get(2)
             .expect("Please provide the file_name correctly to search for the query.");
+        let ignore_case: bool = env::var("IGNORE_CASE").is_ok();
         Ok(Self {
             query: query.clone(),
             file_name: file_name.clone(),
+            ignore_case,
         })
     }
 }
